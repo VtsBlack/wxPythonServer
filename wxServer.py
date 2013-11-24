@@ -3,9 +3,10 @@ __author__ = 'norbit'
 
 #!/usr/bin/env python
 import wx
-
+import wx.animate
 import app
-from app import EVT_COUNT, EVT_RECV
+import threading
+from app import EVT_COUNT, EVT_RECV, Countingthread
 
 
 class MyFrame(wx.Frame):
@@ -13,7 +14,7 @@ class MyFrame(wx.Frame):
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, title=title, size=(200,-1))
         #self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
-        self.panel = wx.Panel(self,-1)
+        self.panel = wx.Panel(self, -1)
 
         self.MainSizer = wx.BoxSizer(wx.VERTICAL)
         self.timer = wx.Timer(self)
@@ -32,6 +33,12 @@ class MyFrame(wx.Frame):
         self.MainSizer.Add(self._counter, 0, wx.CENTER, 5)
         self.MainSizer.Add(self.btnRun, 0, wx.ALL, 5)
 
+        #animation
+        gif = wx.animate.GIFAnimationCtrl(self.panel, -1, "gear_gif.gif", pos=(50, 80))
+        gif.GetPlayer().UseBackgroundColour(True)
+        self.gif = gif
+
+
         self.panel.SetSizer(self.MainSizer)
 
         self.Bind(EVT_COUNT, self.OnCount)
@@ -40,12 +47,14 @@ class MyFrame(wx.Frame):
 
 
 
+
         self.Show(True)
 
 
     def OnRun(self, event):
-        self.worker = app.Countingthread(self, 1)
+        self.worker = Countingthread(self, 1)
         self.worker.start()
+        self.gif.Play()
 
     def OnCount(self, event):
         val = int(self._counter.GetLabel()) + event.GetValue()
@@ -56,7 +65,7 @@ class MyFrame(wx.Frame):
 
     def on_timer(self, event):
         self.cnt_1 = self.cnt_1 + 1
-        self.lbl_runtimes.Label = str(self.cnt_1)
+        self.lbl_runtimes.SetLabel(str(self.cnt_1))
 
     def OnClose(self, event):
         try:
