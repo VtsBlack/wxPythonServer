@@ -11,9 +11,9 @@ from app import EVT_COUNT, EVT_RECV
 class MyFrame(wx.Frame):
     """ We simply derive a new class of Frame. """
     def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent, title=title, size=(200,100))
+        wx.Frame.__init__(self, parent, title=title, size=(200,-1))
         #self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
-        panel1 = wx.Panel(self,-1)
+        self.panel = wx.Panel(self,-1)
 
         self.MainSizer = wx.BoxSizer(wx.VERTICAL)
         self.timer = wx.Timer(self)
@@ -25,14 +25,14 @@ class MyFrame(wx.Frame):
         self._counter = wx.StaticText(self.panel, label="0")
         self.cnt_1 = 0
 
-        self.btnRun = wx.Button(self, label="Run")
+        self.btnRun = wx.Button(self.panel, label="Run")
         self.Bind(wx.EVT_BUTTON, self.OnRun, self.btnRun)
         self.MainSizer.Add(self.lblname, 0, wx.ALL, 5)
         self.MainSizer.Add(self.lbl_runtimes, 0, wx.ALL, 5)
         self.MainSizer.Add(self._counter, 0, wx.CENTER, 5)
         self.MainSizer.Add(self.btnRun, 0, wx.ALL, 5)
 
-        self.SetSizer(self.MainSizer)
+        self.panel.SetSizer(self.MainSizer)
 
         self.Bind(EVT_COUNT, self.OnCount)
         self.Bind(EVT_RECV, self.OnRecv)
